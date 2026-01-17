@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int partition(int arr[], int low, int high);
 void quicksort(int arr[], int low, int high);
@@ -45,13 +46,22 @@ void quicksort(int arr[], int low, int high)
 
 int main(int argc, char* argv[])
 {
-    int arr[] = {2, 123, 21, 323, 1, 23, 90};
-    int arr_length = sizeof(arr)/sizeof(arr[0]);
-
-    quicksort(arr, 0, arr_length-1);
-    for(int i = 0; i < arr_length; i++)
+    if(argc > 2)
     {
-	printf("\n%d\n", arr[i]);
+	int arr[argc];
+	for(int i = 0; i < argc; i++)
+	{
+		if(i > 0)
+		{
+			arr[i] = strtol(argv[i], NULL, 10);
+		}
+	}
+	int arr_length = sizeof(arr)/sizeof(arr[0]);
+	quicksort(arr, 0, arr_length-1);
+    	for(int i = 0; i < arr_length-1; i++)
+	{
+		printf("\n%d\n", arr[i]);
+	}
     }
 }
 
