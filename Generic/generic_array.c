@@ -1,4 +1,4 @@
-  #include <stdlib.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 
@@ -24,7 +24,7 @@ void add_on_list(linked_list* ll ,void* data)
   }
   else
   {
-    linked_list* llaux = ll->prox;
+    linked_list *llaux = ll->prox;
     while(llaux->prox != NULL)
     {
       llaux = llaux->prox;
@@ -44,7 +44,7 @@ void remove_from_list(linked_list* ll)
 
 void print_all_list(linked_list* ll)
 {
-  while(0)
+  while(1)
   {
     printf("\n%i\n",ll->data);
     if(ll->prox == NULL)
@@ -56,12 +56,14 @@ void print_all_list(linked_list* ll)
 }
   
 int main(int argc, char argv[])
-{
+{ 
   linked_list* teste = create_list();
-  add_on_list(teste,(void*)10);
-  add_on_list(teste,(void*)100);
+  add_on_list(teste,(void*)5);
+  add_on_list(teste,(void*)27);
+  add_on_list(teste,(void*)2.0f);
+  //add_on_list(teste, "Hello, World");
   print_all_list(teste);
- // remove_from_list(teste);
+  remove_from_list(teste);
   print_all_list(teste);
   free(teste);
   return 0;
