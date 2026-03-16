@@ -24,17 +24,20 @@ int main(int argc, char* argv[])
 	Quadro quadro;
 	quadro.counter = 0;
     quadro.cor_padrao = BLUE;
+	Texture2D pincel = LoadTexture("/home/ell/programming/paint/pincel.png");
+
+	Rectangle rec = {0, 0, (float)(pincel.width), pincel.height};
 
     while(!WindowShouldClose())
     {
-			if(IsKeyPressed(KEY_ONE)) quadro.cor_padrao = BLUE;
-			if(IsKeyPressed(KEY_TWO)) quadro.cor_padrao = GREEN;
-			if(IsKeyPressed(KEY_THREE)) quadro.cor_padrao = PINK;
-			if(IsKeyPressed(KEY_FOUR)) quadro.cor_padrao = PURPLE;
-			if(IsKeyPressed(KEY_FIVE)) quadro.cor_padrao = GOLD;
-			if(IsKeyPressed(KEY_SIX)) quadro.cor_padrao = VIOLET;
-			if(IsKeyPressed(KEY_ZERO)) quadro.cor_padrao = RED;	
-			quadro.position[quadro.counter].color = quadro.cor_padrao;
+		if(IsKeyPressed(KEY_ONE)) quadro.cor_padrao = BLUE;
+		if(IsKeyPressed(KEY_TWO)) quadro.cor_padrao = GREEN;
+		if(IsKeyPressed(KEY_THREE)) quadro.cor_padrao = PINK;
+		if(IsKeyPressed(KEY_FOUR)) quadro.cor_padrao = PURPLE;
+		if(IsKeyPressed(KEY_FIVE)) quadro.cor_padrao = GOLD;
+		if(IsKeyPressed(KEY_SIX)) quadro.cor_padrao = VIOLET;
+		if(IsKeyPressed(KEY_ZERO)) quadro.cor_padrao = RED;	
+		quadro.position[quadro.counter].color = quadro.cor_padrao;
 
 			if(IsMouseButtonDown(MOUSE_BUTTON_LEFT) && quadro.counter != WINDOW_SIZE*WINDOW_SIZE)
 			{
@@ -53,19 +56,20 @@ int main(int argc, char* argv[])
 		}
 		
 		
+	
 		BeginDrawing();
-			ClearBackground(RED);
-		
-				DrawText("Pintar", 100, 100, 10, GREEN);
-				
-				for(int i = 0; i < quadro.counter; i++)
-				{
-					printf("%i\n", i);
-					DrawPixelV(quadro.position[i].position, quadro.position[i].color);
-				}
-			
+			ClearBackground(RED);	
+			DrawTextureRec(pincel, rec, (Vector2){0, 0}, WHITE);	
+			DrawText("Pintar", 100, 100, 10, GREEN);	
+			for(int i = 0; i < quadro.counter; i++)
+			{
+				printf("%i\n", i);
+				DrawPixelV(quadro.position[i].position, quadro.position[i].color);
+			}	
 		EndDrawing();
+
 	}
     CloseWindow();
+	UnloadTexture(pincel);
     return 0;
 }
