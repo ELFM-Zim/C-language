@@ -57,6 +57,7 @@ void print_all_list(linked_list* ll)
   
 int main(int argc, char argv[])
 { 
+
   linked_list* teste = create_list();
   add_on_list(teste,(void*)5);
   add_on_list(teste,(void*)27);
