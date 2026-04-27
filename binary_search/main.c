@@ -3,36 +3,24 @@
 #include <stdlib.h>
 #include <math.h>
 
-long file_length_seeker(FILE *stream)
+int file_length_seeker(FILE *stream)
 {
-	if(fseek(stream, 0, SEEK_END) == -1)
-	{
-		goto error;
+	int count = 0;
+	int temp;
+
+	while (fscanf(stream, "%d", &temp) == 1) {
+		count++;
 	}
 
-	long end_of_file = ftell(stream);
-	
-	if((end_of_file < 0))
-	{
-		goto error;
-	}
-
-	if(fseek(stream, 0, SEEK_SET) == -1)
-	{
-		goto error;
-	}
-	
-	return end_of_file;
-
-	error:
-		return -1;
+	rewind(stream);
+	return count;
 }
 
 int argv_to_int(char* argv)
 {
 	char* final;
 	long guess = strtol(argv, &final, 0);
-	
+
 	if(final == argv)
 	{
 		return -1;
@@ -41,47 +29,72 @@ int argv_to_int(char* argv)
 	return (int)guess;
 }
 
-int binary_search(FILE *A, int n, int T)
+
+
+int binary_search(int* data, int data_length, int target)
 {
-	int l = 0;
-	int r = n-1; 
+
+	int inicio = 0;
+	int fim = data_length;
 	
 	float loops = 0;
-
 	loops++;
-	fseek(A, 0, SEEK_END);
-	if(T == ftell(A))
+	if(target == data_length)
 	{
 		printf("quantidade de iteracoes: %2.f\n", loops);
-		return T;
+		return target;
 	}
 
-	while(l <= r)
+	while(inicio <= fim)
 	{
-		long m = l+((r-l)/2); 	
-		printf("%ld\n", m);
-		fseek(A, m, SEEK_SET);
-		int aux = ftell(A);
-		loops++;
+		int meio = inicio+((fim-inicio)/2); 	
+		int aux = data[meio-1];
+		loops++;	
 
-		if(aux < T)
+
+		if(aux < target)
 		{
-			l = m+1;
+			inicio = meio+1;
 		}
-		else if(aux > T)
+		else if(aux > target)
 		{
-			r = m-1;
+			fim = meio-1;
 		}
 		else
 		{
 			printf("quantidade de iteracoes: %2.f\n", loops);
-			return m;
+			return meio;
 		}
+
 	}
 	
 	printf("Numero nao esta na lista\n");
 	return -1;
 
+	return -2;
+}
+
+int* load_file_to_memory(FILE *file, long length)
+{
+    if (!file) return NULL;
+
+    int* memory = malloc(sizeof(int) * length);
+    if (!memory) return NULL;
+
+    for (long i = 0; i < length-1; i++)
+    {
+	    int temp;
+	    int result = fscanf(file, "%i", &temp);
+
+	    if (result != 1) {
+		printf("Erro na leitura na posição %ld\n", i);
+		break;
+	    }
+
+	    memory[i] = temp;    
+    }
+
+    return memory;
 }
 
 int main(int argc, char** argv)
@@ -98,32 +111,44 @@ int main(int argc, char** argv)
 	{
 		goto error;
 	}
-	printf("Guess: %i\n", guess);
 
-	FILE* number_list = fopen("numeros.txt", "r");
-	if(number_list == NULL)
+	FILE* number_file = fopen("numeros.txt", "r");
+	if(number_file == NULL)
 	{
-		printf("erro ao abrir o arquivo\n %d\n", errno);
+		printf("Erro ao abrir o arquivo\n %d\n", errno);
 		goto error;
-	}
-	
-	long end_of_file = file_length_seeker(number_list);
+	}	
+
+	int end_of_file = file_length_seeker(number_file);
 	if(end_of_file == -1)
 	{
-		printf("%ld\n", end_of_file);
+		printf("Erro ao calcular o tamanho do arquivo\n");
 		goto error;
 	}
 
-	printf("%ld\n", end_of_file);
+
+	int* number_list = load_file_to_memory(number_file, end_of_file);
+	if(number_list == NULL)
+	{
+		printf("Erro ao carregar o arquivo para memoria\n");
+		goto error_number_list;
+	}
 
 	printf("Valor maximo de iteracoes: %F\n", log2(end_of_file));
-
 	printf("resposta final: %i\n", binary_search(number_list, end_of_file, guess));
 
-	fclose(number_list);
+	fclose(number_file);
+	free(number_list);
+
 	return 0;
 
 	error:
-		fclose(number_list);
+		fclose(number_file);
 		return 1;
+
+	error_number_list:
+		free(number_list);
+		fclose(number_file);
+		return 1;
+
 }
