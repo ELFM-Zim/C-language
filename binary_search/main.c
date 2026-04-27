@@ -32,7 +32,7 @@ int argv_to_int(char* argv)
 {
 	char* final;
 	long guess = strtol(argv, &final, 0);
-
+	
 	if(final == argv)
 	{
 		return -1;
