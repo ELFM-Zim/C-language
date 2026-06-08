@@ -11,7 +11,7 @@ typedef struct dynamic_array
 
 void initialize_array(dynamic_array *da, size_t initialSize)
 {
-    da->data = malloc(initialSize*sizeof(int));
+    da->data = calloc(initialSize, sizeof(int));
     da->size = initialSize;
     da->used = 0;
 }
